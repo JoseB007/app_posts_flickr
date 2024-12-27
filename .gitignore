@@ -1,0 +1,16 @@
+# Ignorar archivos de Python
+*.pyc
+__pycache__/
+
+# Ignorar entornos virtuales
+venv/
+env/
+
+# Ignorar archivos de logs
+*.log
+
+# Ignorar archivos de bases de datos locales
+db.sqlite3
+
+# Ignorar archivos y carpetas de media
+media/

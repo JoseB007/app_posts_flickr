@@ -1,0 +1,41 @@
+<article class="card">
+    <div class="flex items-center justify-between px-4 h-14">
+        <h3 class="text-start leading-5 mr-1">{{ post.title }}</h3>
+        <div class="text-sm text-gray-400 truncate">flickr<a href="{{ post.url }}" class="hover:underline ml-1" target="blank">@{{ post.artist }}</a></div>
+    </div>
+    <figure>
+        <a href="{% url 'a_posts:post' post.pk %}"><img class="w-full" src="{{ post.image }}"></a>
+    </figure>
+    <div class="p-4 pb-2">
+        <a class="flex items-center gap-1 mb-4" href="{% url 'profile:user-profile' post.author %}">
+            <img class="w-8 h-8 object-cover rounded-full" src="{{ post.get_author.avatar }}">
+            <span class="font-bold hover:underline">{{ post.get_author.full_name }}</span>
+            {% if post.author %}
+                <span class="text-sm text-gray-400">@{{ post.author.username }}</span>
+            {% endif %}
+        </a>
+        <p class="text-5xl mb-10 px-4 font1">{{ post.body }}</p>
+        <div class="flex items-center gap-2 text-sm mb-5 flex-wrap">
+            {% for tag in post.tags.all  %}
+                <a href="{% url 'a_posts:posts-by-tag' tag.slug %}" class="bg-gray-200 rounded-full px-3 py-1 hover:bg-gray-800 hover:text-white">{{ tag }}</a>
+            {% endfor %}
+        </div>
+        <div class="flex items-center justify-between text-sm px-2">
+            <a class="font-bold hover:underline" href="{% url 'a_posts:post' post.pk %}">
+                Comments
+                <span class="font-light text-gray-500 ml-1">{{ post.comments.all.count }}</span>
+            </a>
+            <div class="flex items-center gap-4 [&>a:hover]:underline">
+                <div class="flex items-center gap-1">
+                    <img class="w-5 -mt-1" src="https://img.icons8.com/small/24/000000/fire-heart.png">
+                    1
+                </div>
+                <a href="">Like</a>
+                {% if request.user == post.author %}
+                    <a href="{% url 'a_posts:post-update' post.pk %}">Edit</a>
+                    <a href="{% url 'a_posts:post-delete' post.pk %}">Delete</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</article>

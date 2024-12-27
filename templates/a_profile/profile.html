@@ -1,0 +1,46 @@
+{% extends 'layouts/d.html' %}
+
+{% block content %}
+<div id="profile" class="flex flex-col items-center">
+    
+    <div class="w-full md:w-[36rem] lg:w-[50rem]">
+        <div class="card p-6">
+            <div class="text-center flex flex-col items-center">
+                <img class="w-36 h-36 rounded-full object-cover mb-4" src="{{ profile.get_image }}" />
+                <div class="text-center max-w-md">
+                    <h1>{{ profile.get_full_name }}</h1>
+                    <div class="text-gray-400 mb-2 -mt-3">@{{ profile.user.username }}</div>
+                    {% if profile.location %}
+                        <div class="flex items-center justify-center mx-auto">
+                            <img class="object-cover h-6 mr-1 opacity-60" src="https://img.icons8.com/material-outlined/50/000000/marker.png"> 
+                            {{ profile.location }}
+                        </div>
+                    {% endif %}
+                    {% if profile.bio %}
+                    <div class="my-8">
+                        {{ profile.bio }}
+                    </div>
+                    {% endif %}   
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="tabs" class="flex justify-center my-4 gap-2" > 
+        <a class="tab selected">Latest</a>
+        <a class="tab">Top Posts</a>  
+        <a class="tab">Top Comments</a>
+        <a class="tab">Liked Posts</a>
+    </div>
+
+    <div id="tab-contents" class="w-full flex flex-col items-center">
+        
+        <div class="grid place-items-start gap-x-8 max-w-xl mx-auto lg:grid-cols-2 lg:max-w-5xl xl:grid-cols-3 xl:max-w-7xl">
+            {% for post in posts %}
+                {% include 'a_posts/post.html' %}
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}

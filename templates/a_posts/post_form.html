@@ -1,0 +1,33 @@
+{% extends 'layouts/b.html' %}
+
+{% block content %}
+    {% if action == "update_post" %}
+        <h1>Edit Post</h1>
+    {% else %}
+        <h1>Create Post</h1>
+    {% endif %}
+    <div class="card !p-8">
+        
+        {% if action == "create_post" %}
+        <div class="flex items-center mb-6">
+            <img class="h-5 object-cover mr-1" src="https://img.icons8.com/small/96/333333/search--v1.png"/>
+                <a href="https://www.flickr.com/explore" target="_blank" class="hover:underline text-gray-500">Find an image on Flickr</a>
+            </div>
+        {% endif %}
+
+        {% if action == "update_post" %}
+        <div class="flex items-center mb-4">
+            <img class="w-20 h-20 object-cover rounded-xl mr-4" src="{{ object_post.image }}">
+            <h3 class="text-lg font-bold">{{ object_post.title }}</h3>
+        </div>
+        {% endif %}
+    
+        <form method='POST'>
+            {% csrf_token %}
+            <input type="hidden" name="action" value="{{ action }}">
+            {{ form.as_p }}
+            <button type="submit" class="mt-1">Submit Post</button>
+            <a class="button secondaryAction ml-1" href="{{ request.META.HTTP_REFERER }}">Cancel</a>
+        </form>
+    </div>
+{% endblock %}
