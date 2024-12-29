@@ -1,17 +1,16 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect, get_object_or_404
 from django.views import generic
 from django.http import JsonResponse
 from django.urls import reverse_lazy, reverse
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.decorators import login_required
 
 from bs4 import BeautifulSoup
 
 import requests
 
-from .models import Post, Tag, Comment
-from .forms import FormPost, FormComment
+from .models import Post, Tag, Comment, Reply
+from .forms import FormPost, FormComment, FormReply
 
 # Create your views here.
 class ViewHome(generic.ListView):
@@ -160,34 +159,30 @@ class ViewPagePost(generic.DetailView):
         context = super().get_context_data(**kwargs)
         context['categories'] = Tag.objects.all()
         context['title'] = "Django Awesome Posts"
-        context['action'] = 'create_comment'
-        context['form'] = FormComment()
+        context['form_comment'] = FormComment()
+        context['form_reply'] = FormReply()
         return context
     
-    # Crear un comentario
-    def post(self, request, *args, **kwargs):
-        data = {}
-        try:
-            action = request.POST.get('action')
-            if action == 'create_comment':
-                form = FormComment(request.POST)
-                if form.is_valid():
-                    commet = form.save(commit=False)
-                    commet.author = request.user
-                    commet.post = Post.objects.get(pk=self.kwargs['pk'])
-                    commet.save()
-                    return redirect(self.request.path_info)
-                else:
-                    data['error'] = form.errors
-                    return JsonResponse(data)
-            else:
-                data['error'] = 'Acción invalida'
-                return JsonResponse(data)
-        except Exception as e:
-            data['error'] = str(e)
-            return JsonResponse(data)
 
-    
+class CreateCommentView(LoginRequiredMixin, generic.FormView):
+    template_name = "a_posts/page_post.html"
+    form_class = FormComment
+
+    def get_success_url(self):
+        return reverse('a_posts:post', kwargs={'pk': self.kwargs['pk']})
+
+    def form_valid(self, form):
+        post = get_object_or_404(Post, pk=self.kwargs['pk'])
+        comment = form.save(commit=False)
+        comment.author = self.request.user
+        comment.post = post
+        comment.save()
+        return redirect(self.get_success_url())
+
+    def form_invalid(self, form):
+        return JsonResponse({'error': form.errors}, status=400)
+
+
 class ViewDeleteComment(LoginRequiredMixin, generic.DeleteView):
     model = Comment
     template_name = 'a_posts/comment_delete.html'
@@ -210,3 +205,45 @@ class ViewDeleteComment(LoginRequiredMixin, generic.DeleteView):
         except Exception as e:
             datos['error'] = str(e)
             return JsonResponse(datos)
+
+
+class CreateReplyView(LoginRequiredMixin, generic.FormView):
+    template_name = "a_posts/page_post.html"
+    form_class = FormReply
+
+    def form_valid(self, form):
+        comment = get_object_or_404(Comment, pk=self.request.POST.get('comment'))
+        reply = form.save(commit=False)
+        reply.author = self.request.user
+        reply.comment = comment
+        reply.save()
+        success_url = reverse('a_posts:post', kwargs={'pk': comment.post.pk})
+        return redirect(success_url)
+
+    def form_invalid(self, form):
+        return JsonResponse({'error': form.errors}, status=400)
+    
+
+class ViewDeleteReply(LoginRequiredMixin, generic.DeleteView):
+    model = Reply
+    template_name = 'a_posts/reply_delete.html'
+    context_object_name = "reply"
+    
+    def get_success_url(self):
+        return reverse('a_posts:post', kwargs={'pk': self.get_object().comment.post.pk})
+
+    def post(self, request, *args, **kwargs):
+        datos = {}
+        try:
+            if self.get_object().author != request.user:
+                datos['error'] = 'No tienes permisos para eliminar este comentario'
+                return JsonResponse(datos)
+            else:
+                success_url = self.get_success_url()
+                self.get_object().delete()
+                messages.success(request, "Reply deleted")
+                return redirect(success_url)
+        except Exception as e:
+            datos['error'] = str(e)
+            return JsonResponse(datos)
+

@@ -4,7 +4,7 @@ from django.urls import reverse
 
 # Create your models here.
 class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     full_name = models.CharField(max_length=50, null=True, blank=True)
     email = models.EmailField(unique=True, null=True, blank=True)
     image = models.ImageField(upload_to='avatars/', null=True, blank=True)

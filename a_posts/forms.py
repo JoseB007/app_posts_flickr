@@ -1,6 +1,6 @@
 from django.forms import *
 
-from .models import Post, Comment
+from .models import Post, Comment, Reply
 
 class FormPost(ModelForm):
     class Meta:
@@ -36,3 +36,15 @@ class FormComment(ModelForm):
             ),
         }
 
+
+class FormReply(ModelForm):
+    class Meta:
+        model = Reply
+        fields = ['body']
+        widgets = {
+            'body': TextInput(
+                attrs={
+                    'placeholder': 'Agregar una respuesta...',
+                },
+            ),
+        }

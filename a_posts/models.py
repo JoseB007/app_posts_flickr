@@ -51,7 +51,47 @@ class Comment(models.Model):
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='comments')
 
     def __str__(self):
-        return f"Comentario de {self.author} en {self.post.title}"
+        return f"Comentario de {self.get_author()['full_name']} en {self.post.title}"
+    
+    def get_author(self):
+        if self.author:
+            author = {
+                'full_name': self.author.profile.get_full_name(),
+                'avatar': self.author.profile.get_image()
+            }
+        else:
+            author = {
+                'full_name': 'Anónimo',
+                'avatar': '/media/avatars/default.jpg'
+            }
+        return author
+    
+    class Meta:
+        ordering = ['-creation_date']
+
+
+class Reply(models.Model):
+    id = models.CharField(max_length=150, default=uuid.uuid4, unique=True, primary_key=True, editable=False)
+    creation_date = models.DateTimeField(verbose_name="Fecha de creación", auto_now_add=True)
+    body = models.TextField(verbose_name="Cuerpo")
+    comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name='replies')
+    author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='replies')
+
+    def __str__(self):
+        return f"Respuesta de {self.get_author()['full_name']} al comentario de {self.comment.get_author()['full_name']} en {self.comment.post.title}"
+    
+    def get_author(self):
+        if self.author:
+            author = {
+                'full_name': self.author.profile.get_full_name(),
+                'avatar': self.author.profile.get_image()
+            }
+        else:
+            author = {
+                'full_name': 'Anónimo',
+                'avatar': '/media/avatars/default.jpg'
+            }
+        return author
     
     class Meta:
         ordering = ['-creation_date']
