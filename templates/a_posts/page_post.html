@@ -22,21 +22,7 @@
 
     <div id="tab-contents">
         {% for comment in post.comments.all %}
-        <comment class="card p-4 !mb-4">
-            <div class="flex justify-between items-center"> 
-                <a class="flex items-center gap-1 mb-2" href="{{ comment.author.profile.get_absolute_url }}">
-                    <img class="w-8 h-8 object-cover rounded-full" src="{{ comment.get_author.avatar }}"> 
-                    <span class="font-bold hover:underline">{{ comment.get_author.full_name }}</span>
-                    {% if comment.author %}
-                    <span class="text-sm font-normal text-gray-400">@{{ comment.author }}</span>
-                    {% endif %}
-                </a>
-            </div>
-            <p class="text-xl px-2">
-                {{ comment.body }}
-            </p>
-            {% include 'a_posts/reply.html' %}
-        </comment>
+            {% include 'a_posts/comment.html' %}
         {% endfor %}
     </div>
 </div>

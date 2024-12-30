@@ -19,7 +19,7 @@ class Profile(models.Model):
         if self.image:
             avatar = self.image.url
         else:
-            avatar = '/media/avatars/default.jpg'
+            avatar = '/static/img/avatars/default.jpg'
         return avatar
     
     def get_full_name(self):

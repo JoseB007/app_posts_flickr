@@ -1,0 +1,22 @@
+
+{% load static %}
+<comment class="card p-4 !mb-4">
+    <div class="flex justify-between items-center"> 
+        <a class="flex items-center gap-1 mb-2" href="{{ comment.author.profile.get_absolute_url }}">
+            {% if comment.author %}
+            <img class="w-8 h-8 object-cover rounded-full" src="{{ comment.author.profile.get_image }}"> 
+            <span class="font-bold hover:underline">{{ comment.author.profile.get_full_name }}</span>
+            {% else %}
+            <img class="w-8 h-8 object-cover rounded-full" src="{% static 'img/avatars/default.jpg' %}">
+            <span class="font-bold hover:underline">Anónimo</span>
+            {% endif %}
+            {% if comment.author %}
+            <span class="text-sm font-normal text-gray-400">@{{ comment.author }}</span>
+            {% endif %}
+        </a>
+    </div>
+    <p class="text-xl px-2">
+        {{ comment.body }}
+    </p>
+    {% include 'a_posts/reply.html' %}
+</comment>

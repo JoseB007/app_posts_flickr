@@ -30,7 +30,7 @@ class Post(models.Model):
         else:
             author = {
                 'full_name': 'Anónimo',
-                'avatar': '/media/avatars/default.jpg'
+                'avatar': '/static/img/avatars/default.jpg'
             }
         return author
 
@@ -51,21 +51,8 @@ class Comment(models.Model):
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='comments')
 
     def __str__(self):
-        return f"Comentario de {self.get_author()['full_name']} en {self.post.title}"
-    
-    def get_author(self):
-        if self.author:
-            author = {
-                'full_name': self.author.profile.get_full_name(),
-                'avatar': self.author.profile.get_image()
-            }
-        else:
-            author = {
-                'full_name': 'Anónimo',
-                'avatar': '/media/avatars/default.jpg'
-            }
-        return author
-    
+        return f"Comentario de {self.author} en {self.post.title}"
+        
     class Meta:
         ordering = ['-creation_date']
 
@@ -78,20 +65,7 @@ class Reply(models.Model):
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='replies')
 
     def __str__(self):
-        return f"Respuesta de {self.get_author()['full_name']} al comentario de {self.comment.get_author()['full_name']} en {self.comment.post.title}"
-    
-    def get_author(self):
-        if self.author:
-            author = {
-                'full_name': self.author.profile.get_full_name(),
-                'avatar': self.author.profile.get_image()
-            }
-        else:
-            author = {
-                'full_name': 'Anónimo',
-                'avatar': '/media/avatars/default.jpg'
-            }
-        return author
+        return f"Respuesta de {self.author} al comentario de {self.comment.author} en {self.comment.post.title}"
     
     class Meta:
         ordering = ['-creation_date']
