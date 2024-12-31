@@ -1,6 +1,6 @@
 from django.shortcuts import redirect, get_object_or_404
 from django.views import generic
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.urls import reverse_lazy, reverse
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -9,7 +9,7 @@ from bs4 import BeautifulSoup
 
 import requests
 
-from .models import Post, Tag, Comment, Reply
+from .models import Post, Tag, Comment, Reply, LikedPosts
 from .forms import FormPost, FormComment, FormReply
 
 # Create your views here.
@@ -247,3 +247,22 @@ class ViewDeleteReply(LoginRequiredMixin, generic.DeleteView):
             datos['error'] = str(e)
             return JsonResponse(datos)
 
+
+class LikePostView(LoginRequiredMixin, generic.View):
+    def get(self, request, *args, **kwargs):
+        post = get_object_or_404(Post, id=kwargs['pk'])
+        user = request.user
+
+        liked_post, created = LikedPosts.objects.get_or_create(post=post, user=user)
+        if not created:
+            liked_post.delete()
+
+        data = {
+            "liked_post": {
+                "post_id": liked_post.post.id,
+                "user_id": liked_post.user.id,
+                "created": liked_post.created.strftime('%Y-%m-%d %H:%M:%S'),
+            },
+        }
+        
+        return HttpResponse(post.likes.all().count())

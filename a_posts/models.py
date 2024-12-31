@@ -12,6 +12,7 @@ class Post(models.Model):
     title = models.CharField(verbose_name="Título", max_length=500)
     image = models.URLField(verbose_name="Imagen", max_length=500)
     body = models.TextField(verbose_name="Cuerpo")
+    likes = models.ManyToManyField(User, related_name="likedposts", through="LikedPosts")
     tags = models.ManyToManyField('tag', verbose_name="Categorías")
     author = models.ForeignKey(User, verbose_name="Autor", on_delete=models.SET_NULL, null=True, related_name='posts')
 
@@ -33,6 +34,20 @@ class Post(models.Model):
                 'avatar': '/static/img/avatars/default.jpg'
             }
         return author
+
+
+class LikedPosts(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="post_likes")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_likes")
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.user.username}: {self.post.title}'
+    
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['post', 'user'], name='unique_user_post_like')
+        ]
 
 
 class Tag(models.Model):
