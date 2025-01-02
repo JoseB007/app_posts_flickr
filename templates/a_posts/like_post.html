@@ -1,0 +1,25 @@
+{% load static %}
+<div class="flex items-center gap-4 [&>a:hover]:underline">
+    <div class="flex items-center gap-1">
+        {% if request.user in post.likes.all %}
+        <img class="w-5 -mt-1" src="{% static 'img/icons/fire-heart-48.png' %}">
+        {% else %}
+        <img class="w-5 -mt-1" src="{% static 'img/icons/fire-heart-30.png' %}">
+        {% endif %}
+        <div id="like-{{ post.pk }}">{{ post.likes.count }}</div>
+    </div>
+    {% if request.user.is_authenticated %}
+        <a class="cursor-pointer"
+            hx-get="{% url 'a_posts:liked-post' post.pk %}"
+            hx-swap="outerHTML" 
+            hx-trigger="click" 
+            hx-target="closest div"
+        >
+        {% if request.user in post.likes.all %}
+            Dislike
+        {% else %}
+            Like
+        {% endif %}
+        </a>
+    {% endif %}
+</div>

@@ -1,4 +1,4 @@
-from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views import generic
 from django.http import JsonResponse, HttpResponse
 from django.urls import reverse_lazy, reverse
@@ -256,13 +256,7 @@ class LikePostView(LoginRequiredMixin, generic.View):
         liked_post, created = LikedPosts.objects.get_or_create(post=post, user=user)
         if not created:
             liked_post.delete()
-
-        data = {
-            "liked_post": {
-                "post_id": liked_post.post.id,
-                "user_id": liked_post.user.id,
-                "created": liked_post.created.strftime('%Y-%m-%d %H:%M:%S'),
-            },
-        }
         
-        return HttpResponse(post.likes.all().count())
+        return render(request, 'a_posts/like_post.html', {
+            'post': liked_post.post,
+        })
