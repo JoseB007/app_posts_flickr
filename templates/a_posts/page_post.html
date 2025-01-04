@@ -6,7 +6,10 @@
 
 {% if request.user.is_authenticated %}
 <div class="card !pb-0 -mt-3">
-    <form method="POST" action="{% url 'a_posts:create_comment' post.pk %}" class="flex items-center p-4" autocomplete="off">
+    <form  class="flex items-center p-4" autocomplete="off"
+    hx-post="{% url 'a_posts:create_comment' post.pk %}" 
+    hx-target="#tab-contents"
+    hx-swap="afterbegin">
         {% csrf_token %}
         {{ form_comment.body }}
         <button @click="open = false" class="block ml-2" type="submit">Submit</button>
@@ -19,11 +22,10 @@
         <a class="tab selected">Newest First</a> 
         <a class="tab">Top Comments</a>
     </div>
-
     <div id="tab-contents">
-        {% for comment in post.comments.all %}
-            {% include 'a_posts/comment.html' %}
-        {% endfor %}
+    {% for comment in post.comments.all %}
+        {% include 'a_posts/comment.html' %}
+    {% endfor %}
     </div>
 </div>
 {% endblock %}

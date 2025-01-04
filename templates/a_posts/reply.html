@@ -14,11 +14,6 @@
         {% endif %}
     </a>
     <div class="flex items-center gap-4 [&>a:hover]:underline">
-        <div class="flex items-center gap-1">
-            <img class="w-5 -mt-1" src="https://img.icons8.com/small/24/000000/fire-heart.png">
-            1
-        </div>
-        <a href="">Like</a>
         {% if request.user == comment.author %}
         <a href="{% url 'a_posts:delete-comment' comment.pk  %}">Delete</a>
         {% endif %}
@@ -46,11 +41,6 @@
                 </div>
             </div>
             <div class="flex items-center gap-4 [&>a:hover]:underline">
-                <div class="flex items-center gap-1">
-                    <img class="w-5 -mt-1" src="https://img.icons8.com/small/24/000000/fire-heart.png">
-                    1
-                </div>
-                <a href="">Like</a>
                 {% if request.user == reply.author %}
                 <a href="{% url 'a_posts:delete-reply' reply.pk %}">Delete</a>
                 {% endif %}

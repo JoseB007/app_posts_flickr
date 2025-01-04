@@ -177,7 +177,11 @@ class CreateCommentView(LoginRequiredMixin, generic.FormView):
         comment.author = self.request.user
         comment.post = post
         comment.save()
-        return redirect(self.get_success_url())
+        return render(self.request, 'a_posts/snnipets/add_comment.html', {
+            'comment': comment,
+            'post': post,
+            'form_reply': FormReply(),
+        })
 
     def form_invalid(self, form):
         return JsonResponse({'error': form.errors}, status=400)
