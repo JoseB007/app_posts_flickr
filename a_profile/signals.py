@@ -11,7 +11,7 @@ def create_profile(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(
             user=user,
-            email=user.email,
+            email=user.email if user.email else None
         )
     else:
         profile = get_object_or_404(Profile, user=user)
