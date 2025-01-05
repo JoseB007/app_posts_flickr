@@ -17,5 +17,48 @@
     <p class="text-xl px-2">
         {{ comment.body }}
     </p>
-    {% include 'a_posts/reply.html' %}
+    <div x-data="{ repliesOpen: false }" class="flex items-center justify-between flex-wrap text-sm px-2">
+        <a @click="repliesOpen = !repliesOpen" class="font-bold hover:underline cursor-pointer">
+            {% if comment.replies.all or request.user.is_authenticated %}
+            <div class="inline-block" x-bind:class="repliesOpen && 'rotate-90 duration-300'">
+                <svg transform ="rotate(90)" width="9" height="9" viewBox="0 0 25 25">
+                    <path d="M24 22h-24l12-20z"/>
+                </svg>
+            </div>
+            {% endif %}
+            <div class="inline-block" id="replies-{{ comment.pk }}">
+                {% if comment.replies.all %}
+                Replies
+                <span id="replies-{{ comment.pk }}" class="font-light text-gray-500 ml-1"
+                _="on htmx:afterRequest reset() me">{{ comment.replies.all.count }}</span>
+                {% else %}
+                    {% if request.user.is_authenticated %}
+                        Add replies
+                    {% endif %}
+                {% endif %}
+            </div>
+        </a>
+        <div class="flex items-center gap-4 [&>a:hover]:underline">
+            {% if request.user == comment.author %}
+            <a href="{% url 'a_posts:delete-comment' comment.pk  %}">Delete</a>
+            {% endif %}
+        </div>
+    
+        <div x-show="repliesOpen" x-cloak class="basis-full mt-3 pl-8 grid grid-cols-1">
+            {% for reply in comment.replies.all %}
+                {% include 'a_posts/reply.html' %}
+            {% endfor %}
+            {% if request.user.is_authenticated %}
+            <form class="replyform flex justify-between" autocomplete="off"
+            hx-post="{% url 'a_posts:create_reply' %}" 
+            hx-target="this"
+            hx-swap="outerHTML">
+                {% csrf_token %}
+                {{ form_reply.body }}
+                <input type="hidden" name="comment" value="{{ comment.pk }}">
+                <button class="block" type="submit">Submit</button>
+            </form>
+            {% endif %}
+        </div>
+    </div> 
 </comment>

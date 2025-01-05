@@ -1,63 +1,26 @@
 {% load static %}
-<div x-data="{ repliesOpen: false }" class="flex items-center justify-between flex-wrap text-sm px-2">
-    <a @click="repliesOpen = !repliesOpen" class="font-bold hover:underline cursor-pointer">
-        {% if comment.replies.all or request.user.is_authenticated %}
-        <div class="inline-block" x-bind:class="repliesOpen && 'rotate-90 duration-300'">
-            <svg transform ="rotate(90)" width="9" height="9" viewBox="0 0 25 25">
-                <path d="M24 22h-24l12-20z"/>
-            </svg>
-        </div>
-        {% endif %}
-        {% if comment.replies.all %}
-        Replies
-        <span class="font-light text-gray-500 ml-1">{{ comment.replies.all.count }}</span>
+<reply class="flex items-end justify-between py-4 border-t">
+    <div class="flex">
+        {% if reply.author %}
+        <img class="w-8 h-8 object-cover rounded-full mr-2" src="{{ reply.author.profile.get_image }}">
         {% else %}
-            {% if request.user.is_authenticated %}
-                Add replies
-            {% endif %}
+        <img class="w-8 h-8 object-cover rounded-full mr-2" src="{% static 'img/avatars/default.jpg' %}">
         {% endif %}
-    </a>
-    <div class="flex items-center gap-4 [&>a:hover]:underline">
-        {% if request.user == comment.author %}
-        <a href="{% url 'a_posts:delete-comment' comment.pk  %}">Delete</a>
-        {% endif %}
-    </div>
-
-    <div x-show="repliesOpen" x-cloak class="basis-full mt-3 pl-8 grid grid-cols-1">
-        {% for reply in comment.replies.all %}
-        <reply class="flex items-end justify-between py-4 border-t">
-            <div class="flex">
+        <div class="w-fit">
+            <a class="block" href="{{ reply.author.profile.get_absolute_url }}">
                 {% if reply.author %}
-                <img class="w-8 h-8 object-cover rounded-full mr-2" src="{{ reply.author.profile.get_image }}">
+                <span class="font-bold hover:underline">{{ reply.author.profile.get_full_name }}</span>
+                <span class="text-sm text-gray-400">@{{ reply.author }}</span>
                 {% else %}
-                <img class="w-8 h-8 object-cover rounded-full mr-2" src="{% static 'img/avatars/default.jpg' %}">
+                <span class="font-bold hover:underline">Anónimo</span>
                 {% endif %}
-                <div class="w-fit">
-                    <a class="block" href="{{ reply.author.profile.get_absolute_url }}">
-                        {% if reply.author %}
-                        <span class="font-bold hover:underline">{{ reply.author.profile.get_full_name }}</span>
-                        <span class="text-sm text-gray-400">@{{ reply.author }}</span>
-                        {% else %}
-                        <span class="font-bold hover:underline">Anónimo</span>
-                        {% endif %}
-                    </a>
-                    <div class="mr-3">{{ reply.body }}</div>
-                </div>
-            </div>
-            <div class="flex items-center gap-4 [&>a:hover]:underline">
-                {% if request.user == reply.author %}
-                <a href="{% url 'a_posts:delete-reply' reply.pk %}">Delete</a>
-                {% endif %}
-            </div>
-        </reply>
-        {% endfor %}
-        {% if request.user.is_authenticated %}
-        <form method="POST" action="{% url 'a_posts:create_reply' %}" class="replyform flex justify-between" autocomplete="off">
-            {% csrf_token %}
-            {{ form_reply.body }}
-            <input type="hidden" name="comment" value="{{ comment.pk }}">
-            <button class="block" type="submit">Submit</button>
-        </form>
+            </a>
+            <div class="mr-3">{{ reply.body }}</div>
+        </div>
+    </div>
+    <div class="flex items-center gap-4 [&>a:hover]:underline">
+        {% if request.user == reply.author %}
+        <a href="{% url 'a_posts:delete-reply' reply.pk %}">Delete</a>
         {% endif %}
     </div>
-</div> 
+</reply>

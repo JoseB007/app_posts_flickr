@@ -180,7 +180,7 @@ class CreateCommentView(LoginRequiredMixin, generic.FormView):
         return render(self.request, 'a_posts/snnipets/add_comment.html', {
             'comment': comment,
             'post': post,
-            'form_reply': FormReply(),
+            'form_reply': self.form_class,
         })
 
     def form_invalid(self, form):
@@ -222,7 +222,12 @@ class CreateReplyView(LoginRequiredMixin, generic.FormView):
         reply.comment = comment
         reply.save()
         success_url = reverse('a_posts:post', kwargs={'pk': comment.post.pk})
-        return redirect(success_url)
+        # return redirect(success_url)
+        return render(self.request, 'a_posts/snnipets/add_reply.html', context={
+            'reply': reply,
+            'comment': comment,
+            'form_reply': self.form_class,
+        })
 
     def form_invalid(self, form):
         return JsonResponse({'error': form.errors}, status=400)

@@ -1,0 +1,23 @@
+{% include 'a_posts/reply.html' %}
+
+<form class="replyform flex justify-between" autocomplete="off"
+hx-post="{% url 'a_posts:create_reply' %}" 
+hx-target="this"
+hx-swap="outerHTML">
+    {% csrf_token %}
+    {{ form_reply.body }}
+    <input type="hidden" name="comment" value="{{ comment.pk }}">
+    <button class="block" type="submit">Submit</button>
+</form>
+
+<div hx-swap-oob="true" id="replies-{{ comment.pk }}" class="inline-block">
+    {% if comment.replies.all %}
+    Replies
+    <span id="replies-{{ comment.pk }}" class="font-light text-gray-500 ml-1"
+    _="on htmx:afterRequest reset() me">{{ comment.replies.all.count }}</span>
+    {% else %}
+        {% if request.user.is_authenticated %}
+            Add replies
+        {% endif %}
+    {% endif %}
+</div>
