@@ -9,7 +9,8 @@
     <form  class="flex items-center p-4" autocomplete="off"
     hx-post="{% url 'a_posts:create_comment' post.pk %}" 
     hx-target="#tab-contents"
-    hx-swap="afterbegin">
+    hx-swap="afterbegin"
+    _="on htmx:afterRequest reset() me">
         {% csrf_token %}
         {{ form_comment.body }}
         <button @click="open = false" class="block ml-2" type="submit">Submit</button>

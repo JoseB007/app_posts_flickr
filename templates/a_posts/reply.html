@@ -1,16 +1,20 @@
 {% load static %}
 <div x-data="{ repliesOpen: false }" class="flex items-center justify-between flex-wrap text-sm px-2">
     <a @click="repliesOpen = !repliesOpen" class="font-bold hover:underline cursor-pointer">
+        {% if comment.replies.all or request.user.is_authenticated %}
         <div class="inline-block" x-bind:class="repliesOpen && 'rotate-90 duration-300'">
             <svg transform ="rotate(90)" width="9" height="9" viewBox="0 0 25 25">
                 <path d="M24 22h-24l12-20z"/>
             </svg>
         </div>
+        {% endif %}
         {% if comment.replies.all %}
         Replies
         <span class="font-light text-gray-500 ml-1">{{ comment.replies.all.count }}</span>
         {% else %}
-        Add replies
+            {% if request.user.is_authenticated %}
+                Add replies
+            {% endif %}
         {% endif %}
     </a>
     <div class="flex items-center gap-4 [&>a:hover]:underline">
@@ -47,11 +51,13 @@
             </div>
         </reply>
         {% endfor %}
+        {% if request.user.is_authenticated %}
         <form method="POST" action="{% url 'a_posts:create_reply' %}" class="replyform flex justify-between" autocomplete="off">
             {% csrf_token %}
             {{ form_reply.body }}
             <input type="hidden" name="comment" value="{{ comment.pk }}">
             <button class="block" type="submit">Submit</button>
         </form>
+        {% endif %}
     </div>
 </div> 
