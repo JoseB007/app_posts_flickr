@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.urls import reverse
 
 import uuid
 
@@ -34,6 +35,9 @@ class Post(models.Model):
                 'avatar': '/static/img/avatars/default.jpg'
             }
         return author
+    
+    def get_absolute_url(self):
+        return reverse("a_posts:post", args=[self.pk])
 
 
 class LikedPosts(models.Model):

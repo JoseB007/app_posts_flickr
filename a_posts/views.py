@@ -28,7 +28,6 @@ class ViewHome(generic.ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = "Django Awesome Posts"
-        context['categories'] = Tag.objects.all()
         context['current_tag'] = self.tag
         return context
 
@@ -157,7 +156,6 @@ class ViewPagePost(generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['categories'] = Tag.objects.all()
         context['title'] = "Django Awesome Posts"
         context['form_comment'] = FormComment()
         context['form_reply'] = FormReply()

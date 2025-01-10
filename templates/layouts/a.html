@@ -17,7 +17,8 @@
 
     </main>
 
-    {% include 'includes/sidebar.html' %}
+    {% load posts_extras %}
+    {% sidebar_view current_tag %}
 
 </content>
 

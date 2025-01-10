@@ -21,26 +21,18 @@ x-transition:enter-end="opacity-100 mt-0">
             <h2>Top Posts</h2>
         </div>
         <ul class="hoverlist">
+            {% for post in top_posts %}
             <li>
-                <a href="" class="flex items-stretch justify-between">
+                <a href="{{ post.get_absolute_url }}" class="flex items-stretch justify-between">
                     <div class="flex items-center truncate">
-                        <img class="w-10 h-10 rounded-lg object-cover mr-3 shrink-0" src="https://live.staticflickr.com/65535/50618365686_36f887ab88_c.jpg">
-                        <img class="w-6 h-6 rounded-full object-cover mr-1" src="https://img.icons8.com/small/96/A9A9A9/happy.png">
-                        <span class="font-bold text-sm mr-1">Homer</span>
+                        <img class="w-10 h-10 rounded-lg object-cover mr-3 shrink-0" src="{{ post.image }}">
+                        <img class="w-6 h-6 rounded-full object-cover mr-1" src="{{ post.get_author.avatar }}">
+                        <span class="font-bold text-sm mr-1">{{ post.get_author.full_name|truncatewords:2 }}</span>
                     </div>
-                    <span class="text-sm font-light text-grey-500 shrink-0">3 Likes / 1</span>
+                    <span class="text-sm font-light text-grey-500 shrink-0">{{ post.num_likes }} Like{{ post.num_likes|pluralize:"s" }} / {{ post.comments.all.count }}</span>
                 </a>
             </li>
-            <li>
-                <a href="" class="flex items-stretch justify-between">
-                    <div class="flex items-center truncate">
-                        <img class="w-10 h-10 rounded-lg object-cover mr-3" src="https://live.staticflickr.com/65535/50618365686_36f887ab88_c.jpg">
-                        <img class="w-6 h-6 rounded-full object-cover mr-1" src="https://img.icons8.com/small/96/A9A9A9/happy.png">
-                        <span class="font-bold text-sm mr-1">Homer</span>
-                    </div>
-                    <span class="text-sm font-light text-grey-500 shrink-0">3 Likes / 1</span>
-                </a>
-            </li>
+            {% endfor %}
         </ul>
     </section>
     <section class="card p-4">
