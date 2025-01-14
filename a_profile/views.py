@@ -1,8 +1,9 @@
-from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views import generic
-from django.http import JsonResponse, Http404
+from django.http import JsonResponse, Http404, HttpResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
+from django.db.models import Count
 
 from .models import Profile
 from .forms import ProfileForm
@@ -24,6 +25,20 @@ class ViewProfile(generic.DetailView):
                 raise Http404()
         return self.object
     
+    def get(self, request, *args, **kwargs):
+        response = super().get(request, *args, **kwargs)
+        if 'top-post' in request.GET:
+            posts = self.get_object().user.posts.annotate(num_likes=Count("likes")).filter(num_likes__gt=0).order_by("-num_likes")
+            response = render(request, "a_posts/snnipets/add_top_posts.html", {'posts': posts})
+        elif 'latest' in request.GET:
+            posts = self.get_object().user.posts.all()
+            response = render(request, "a_posts/snnipets/add_top_posts.html", {'posts': posts})
+        elif 'liked-posts' in request.GET:
+            # posts = Post.objects.filter(post_likes__user=self.get_object().user).order_by('-post_likes__created')
+            posts = self.get_object().user.likedposts.order_by('-post_likes__created')
+            response = render(request, "a_posts/snnipets/add_top_posts.html", {'posts': posts})
+        return response
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['posts'] = self.object.user.posts.all()

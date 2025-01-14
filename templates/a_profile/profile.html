@@ -26,16 +26,19 @@
         </div>
     </div>
 
-    <div id="tabs" class="flex justify-center my-4 gap-2" > 
-        <a class="tab selected">Latest</a>
-        <a class="tab">Top Posts</a>  
-        <a class="tab">Top Comments</a>
-        <a class="tab">Liked Posts</a>
+    <div id="tabs" class="flex justify-center my-4 gap-2" hx-target="#tab-contents" hx-swap="innerHTML" _="on htmx:afterOnLoad take .selected for event.target"> 
+        <a hx-get="{% url 'profile:user-profile' profile.user.username %}?latest=latest" class="tab selected">Latest</a>
+        <a hx-get="{% url 'profile:user-profile' profile.user.username %}?top-post=top-post" class="tab">Top Posts</a>  
+        <!-- <a class="tab">Top Comments</a> -->
+        <a hx-get="{% url 'profile:user-profile' profile.user.username %}?liked-posts=liked-posts" class="tab">Liked Posts</a>
     </div>
 
     <div id="tab-contents" class="w-full flex flex-col items-center">
-        
-        <div class="grid place-items-start gap-x-8 max-w-xl mx-auto lg:grid-cols-2 lg:max-w-5xl xl:grid-cols-3 xl:max-w-7xl">
+        <div class="grid place-items-start gap-x-8 mx-auto  
+        {% if posts.count == 1 %} grid-cols-1 max-w-xl 
+        {% elif posts.count == 2 %} grid-cols-1 max-w-xl lg:grid-cols-2 lg:max-w-5xl
+        {% else %} grid-cols-1 max-w-xl lg:grid-cols-2 lg:max-w-5xl xl:grid-cols-3 xl:max-w-7xl
+        {% endif %}">
             {% for post in posts %}
                 {% include 'a_posts/post.html' %}
             {% endfor %}
