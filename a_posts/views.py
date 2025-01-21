@@ -17,6 +17,7 @@ class ViewHome(generic.ListView):
     model = Post
     template_name = 'a_posts/home.html'
     context_object_name = 'posts_list'
+    paginate_by = 3
     
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -24,6 +25,27 @@ class ViewHome(generic.ListView):
         if self.tag:
             queryset = queryset.filter(tags__slug=self.tag)
         return queryset
+    
+    def get(self, request, *args, **kwargs):
+        paginator = self.get_paginator(self.get_queryset(), self.paginate_by)
+
+        page_number = request.GET.get('page', 1)
+
+        try:
+            posts = paginator.page(page_number)
+        except:
+            return HttpResponse(status=404)
+        
+        context = {
+            'posts_list': posts,
+            'page_obj': posts,
+            'current_tag': self.tag,
+        }
+
+        if request.headers.get('HX-Request') == 'true':
+            return render(request, 'a_posts/snnipets/loop_posts.html', context)
+        
+        return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

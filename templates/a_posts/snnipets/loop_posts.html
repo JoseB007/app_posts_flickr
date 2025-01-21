@@ -1,16 +1,15 @@
-{% extends 'layouts/a.html' %}
+
 
 {% block content %}
     {% for post in posts_list %}
     {% include 'a_posts/post.html' %}
     {% endfor %}
-
+    
     <div
-    hx-get="{% if current_tag %}{% url 'a_posts:posts-by-tag' current_tag %}{% else %}
-            {% url 'a_posts:home_view' %}{% endif %}?page={{ page_obj.number|add:1 }}"
+    hx-get="{% if current_tag %}{% url 'a_posts:posts-by-tag' current_tag %}{% else %}{% url 'a_posts:home_view' %}{% endif %}?page={{ page_obj.number|add:1 }}"
     hx-trigger="revealed"
     hx-swap="outerHTML"
     hx-target="this">
     </div>
-
+    
 {% endblock %}
