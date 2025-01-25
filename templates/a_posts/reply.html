@@ -4,7 +4,7 @@
         {% if reply.author %}
         <img class="w-8 h-8 object-cover rounded-full mr-2" src="{{ reply.author.profile.get_image }}">
         {% else %}
-        <img class="w-8 h-8 object-cover rounded-full mr-2" src="{% static 'img/avatars/default.jpg' %}">
+        <img class="w-8 h-8 object-cover rounded-full mr-2" src="{% static 'img/avatars/default.png' %}">
         {% endif %}
         <div class="w-fit">
             <a class="block" href="{{ reply.author.profile.get_absolute_url }}">

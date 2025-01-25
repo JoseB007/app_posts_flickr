@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     # apps
     'a_posts',
     'a_profile',
+    'a_inbox',
     # allauth
     'allauth',
     'allauth.account',
@@ -118,9 +119,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es-en'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Bogota'
 
 USE_I18N = True
 

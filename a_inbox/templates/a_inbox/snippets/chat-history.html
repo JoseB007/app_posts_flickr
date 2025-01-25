@@ -1,0 +1,21 @@
+<div class="chat-history" id="chat-history">
+    <ul class="m-b-0">
+        {% for message in conversation.messages.all %}
+            {% if message.sender == request.user %}
+            <li class="clearfix">
+                <div class="message-data text-right">
+                    <small class="message-data-time">{{ message.created }}</small>
+                </div>
+                <div class="message other-message float-right">{{ message.body }}</div>
+            </li>
+            {% else %}
+                <li class="clearfix">
+                    <div class="message-data">
+                        <small class="message-data-time">{{ message.created }}</small>
+                    </div>
+                    <div class="message my-message">{{ message.body }}</div>                                    
+                </li>
+            {% endif %}
+        {% endfor %}                               
+    </ul>
+</div>

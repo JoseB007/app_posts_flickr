@@ -1,7 +1,7 @@
 <header x-data="{ mobilenavOpen: false }" class="md:flex items-center justify-between [&>*]:px-8 bg-gray-800 h-20 text-white sticky top-0 z-40">
     <div class="flex items-center justify-between h-20">
         <logo>
-            <a class="flex items-center gap-1" href="/">
+            <a class="flex items-center gap-1" href="/" style="color: white !important;">
                 <img class="w-7 -mt-1" src="https://img.icons8.com/small/64/ffffff/fire-heart.png"/>
                 <span class="text-lg font-bold">Awesome</span>
             </a>
@@ -19,8 +19,8 @@
     x-transition:enter-end="opacity-100 translate-y-0">
         <ul class="flex items-center navitems flex-col md:flex-row gap-8 md:gap-0 justify-center h-full -translate-y-10 md:translate-y-0">
             {% if request.user.is_authenticated %}
-            <li><a href="/">Home</a></li>
-            <li><a href="{% url 'a_posts:post-create' %}">Create Post</a></li>
+            <li><a href="/" style="color: white !important;">Home</a></li>
+            <li><a href="{% url 'a_posts:post-create' %}" style="color: white !important;">Create Post</a></li>
             <li x-data="{ dropdownOpen: false }" class="relative">
                 <a @click="dropdownOpen = !dropdownOpen" @click.away="dropdownOpen = false" class="cursor-pointer select-none">
                     <img class="h-8 w-8 rounded-full object-cover" src="{{ request.user.profile.get_image }}"/>

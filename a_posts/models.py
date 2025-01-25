@@ -32,7 +32,7 @@ class Post(models.Model):
         else:
             author = {
                 'full_name': 'Anónimo',
-                'avatar': '/static/img/avatars/default.jpg'
+                'avatar': '/static/img/avatars/default.png'
             }
         return author
     

@@ -6,7 +6,7 @@
             <img class="w-8 h-8 object-cover rounded-full" src="{{ comment.author.profile.get_image }}"> 
             <span class="font-bold hover:underline">{{ comment.author.profile.get_full_name }}</span>
             {% else %}
-            <img class="w-8 h-8 object-cover rounded-full" src="{% static 'img/avatars/default.jpg' %}">
+            <img class="w-8 h-8 object-cover rounded-full" src="{% static 'img/avatars/default.png' %}">
             <span class="font-bold hover:underline">Anónimo</span>
             {% endif %}
             {% if comment.author %}

@@ -25,6 +25,7 @@ urlpatterns = [
     path('accounts/', include('allauth.urls')),
     path('posts/', include('a_posts.urls')),
     path('profile/', include('a_profile.urls')),
+    path('inbox/', include('a_inbox.urls')),
     path('', RedirectView.as_view(url='/posts/', permanent=True))
 ]
 
