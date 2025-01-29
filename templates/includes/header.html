@@ -21,6 +21,7 @@
             {% if request.user.is_authenticated %}
             <li><a href="/" style="color: white !important;">Home</a></li>
             <li><a href="{% url 'a_posts:post-create' %}" style="color: white !important;">Create Post</a></li>
+            <li><a href="{% url 'inbox:inbox' %}" style="color: white !important;">Inbox</a></li>
             <li x-data="{ dropdownOpen: false }" class="relative">
                 <a @click="dropdownOpen = !dropdownOpen" @click.away="dropdownOpen = false" class="cursor-pointer select-none">
                     <img class="h-8 w-8 rounded-full object-cover" src="{{ request.user.profile.get_image }}"/>

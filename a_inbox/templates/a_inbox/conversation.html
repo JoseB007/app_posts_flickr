@@ -5,23 +5,17 @@
             <div class="chat-header">
                 <div class="row">
                     <div class="col-lg-6" id="chat-header">
-                        {% if conversation.participants.all.0 == request.user %}
-                        <a href="{{ conversation.participants.all.1.profile.get_absolute_url }}">
-                            <img src="{{ conversation.participants.all.1.profile.get_image }}" alt="avatar">
-                        </a>
-                        <div class="chat-about">
-                            <h6 class="m-b-0">{{ conversation.participants.all.1.profile.get_full_name }}</h6>
-                            <small>{{ conversation.lastmessage_created }}</small>
-                        </div>
-                        {% else %}
-                        <a href="#" data-toggle="modal" data-target="#view_info">
-                            <img src="{{ conversation.participants.all.0.profile.get_image }}" alt="avatar">
-                        </a>
-                        <div class="chat-about">
-                            <h6 class="m-b-0">{{ conversation.participants.all.0.profile.get_full_name }}</h6>
-                            <small>{{ conversation.lastmessage_created }}</small>
-                        </div>
+                        {% for user in conversation.participants.all %}
+                        {% if user != request.user %}
+                            <a href="{{ user.profile.get_absolute_url }}">
+                                <img src="{{ user.profile.get_image }}" alt="avatar" style="height: 40px; width: auto;">
+                            </a>
+                            <div class="chat-about">
+                                <h6 class="m-b-0">{{ user.profile.get_full_name }}</h6>
+                                <small id="lastmessage_created-{{ conversation.pk }}">{{ conversation.lastmessage_created }}</small>
+                            </div>
                         {% endif %}
+                        {% endfor %}
                     </div>
                 </div>
             </div>
@@ -46,7 +40,7 @@
                     {% endfor %}                               
                 </ul>
             </div>
-            <div class="chat-message ">
+            <div class="chat-message mt-2">
                 <form class="replyform flex justify-between" autocomplete="off"
                 hx-post="{% url 'inbox:send' conversation.pk %}"
                 hx-target="#chat-history"

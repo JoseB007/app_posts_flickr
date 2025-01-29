@@ -1,3 +1,29 @@
+<ul hx-swap-oob="true" id="list-conversations-user" class="chat-list">
+    {% for conversation in conversations %}
+        {% if request.user in conversation.participants.all %}
+        <li id="conversation-user-{{ conversation.pk }}" class="clearfix {% if conversation.pk in request.get_full_path %} tab selected {% endif %}" style="border-radius: 0;">
+            {% for user in conversation.participants.all %}
+            {% if user != request.user %}
+                <a href="{% url 'inbox:inbox-conversation' conversation.pk %}">
+                    <div class="d-flex flex-row">
+                        <div class="contenedor_img">
+                            <img src="{{ user.profile.get_image }}" alt="avatar">
+                        </div>
+                        <div class="about">
+                            <div class="name">{{ user.profile.get_full_name }}</div>
+                            <div class="status" id="status-{{ conversation.pk }}"> <i class="fa fa-circle offline">
+                                </i>{{ conversation.lastmessage_created }}
+                            </div>                                         
+                        </div>
+                    </div>
+                </a>
+            {% endif %}
+            {% endfor %}
+        </li>
+        {% endif %}
+    {% endfor %}
+</ul>
+
 <div class="chat-history" id="chat-history">
     <ul class="m-b-0">
         {% for message in conversation.messages.all %}
@@ -19,3 +45,5 @@
         {% endfor %}                               
     </ul>
 </div>
+
+<small hx-swap-oob="true" id="lastmessage_created-{{ conversation.pk }}">{{ conversation.lastmessage_created }}</small>

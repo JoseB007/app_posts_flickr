@@ -1,0 +1,22 @@
+<div class="d-flex flex-wrap">
+{% for profile in profiles %}
+    <div
+        style="flex: 0 0 33.33%; padding: 1rem"
+        class="hover:underline cursor-pointer"
+        hx-get="{% url 'inbox:new-conversation' profile.user.pk %}"
+        hx-trigger="click"
+        hx-target="#new-message"
+        hx-swap="innerHTML">
+        <div class="flex justify-center">
+            <img
+                class="w-12 h-12 rounded-full object-cover"
+                src="{{  profile.get_image }}"
+            />
+        </div>
+        <div class="font-bold text-sm text-center">
+            {{ profile.get_full_name }}
+        </div>
+        <div class="text-xs text-center">{{ profile.user.username }}</div>
+    </div>
+    {% endfor %}
+</div>

@@ -1,4 +1,4 @@
-#card_chat-app {
+.card-people-list {
     background: #fff;
     transition: .5s;
     border: 0;
@@ -7,8 +7,8 @@
     box-shadow: 0 1px 2px 0 rgb(0 0 0 / 10%);
 }
 
-.chat-app .chat {
-    border-left: 1px solid #eaeaea
+.chat-app {
+    padding: .5rem 0 .5rem 0;
 }
 
 .people-list {
@@ -24,6 +24,10 @@
 }
 
 .people-list .chat-list li:hover {
+    cursor: pointer
+}
+
+.div-hover:hover {
     cursor: pointer
 }
 
@@ -76,15 +80,13 @@
     padding: 20px;
     overflow: auto; /* Permite que el contenedor se expanda cuando haya contenido adicional */
     transition: height 0.3s ease; /* Suaviza el cambio de tamaño */
-    border-bottom: 2px solid #fff
 }
 
 .chat .chat-default {
+    height: 550px;
     display: flex; /* Permite centrar elementos dentro del contenedor */
     align-items: center; /* Centra verticalmente los elementos hijos */
     justify-content: center; /* Centra horizontalmente los elementos hijos */
-    height: 550px; /* Altura fija mientras está vacío o con solo la imagen */
-    border-bottom: 2px solid #fff
 }
 
 .chat .chat-history ul {
@@ -166,8 +168,9 @@
     left: 93%
 }
 
-.chat .chat-message {
-    padding: 20px
+.people-new-message {
+    padding-bottom: .5rem;
+    padding-right: .5rem;
 }
 
 .online,
@@ -196,4 +199,24 @@
 
 a {
     text-decoration: none !important;
+}
+
+.input-group input {
+    border-radius: 0;
+}
+
+.input-group span {
+    border-bottom-left-radius: 0
+}
+
+.contenedor_img {
+    height: 40px;
+    width: 40px;
+    overflow: hidden;
+}
+
+.contenedor img {
+    width: 100%; /* Ocupará el 100% del div */
+    height: 100%;
+    object-fit: cover; /* Recorta la imagen manteniendo la proporción */
 }

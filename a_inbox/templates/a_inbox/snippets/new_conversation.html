@@ -1,0 +1,26 @@
+<div id="new-message">
+    <div class="flex gap-2 items-center mb-2">
+        <span class="font-bold">To:</span>
+        <div class="flex items-center gap-1">
+            <img class="w-10 h-10 object-cover rounded-full mr-1" src="{{ user.profile.get_image}}">
+            <div class="font-bold">
+                {{ user.profile.get_full_name}}
+                <span class="text-xs font-normal text-zinc-500">@{{ user.username }}</span>
+                <!-- <span class="text-xs font-bold text-red-500 pl-2">User not verified!</span> -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<div>
+    <form autocomplete="off" id="new-conversation" action="{% url 'inbox:new-conversation' user.pk %}" method="post">
+        {% csrf_token %}
+        {{ form.body }}
+    
+    <div class="d-flex justify-content-end mt-3">
+        <button class="mt-1" type="submit">Submit Message</button>
+        <a href="{{ request.META.HTTP_REFERER }}" class="button secondaryAction mt-1 ml-1 cursor-pointer">Cancel</a>
+    </div>
+    </form>
+</div>
+

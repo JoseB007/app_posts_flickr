@@ -5,6 +5,7 @@ from . import views
 app_name = 'inbox'
 urlpatterns = [
     path('', views.InboxView.as_view(), name='inbox'),
-    path('<uuid:pk>/', views.ConversationView.as_view(), name='conversation'),
-    path('send/<uuid:pk>/', views.SendMessageView.as_view(), name='send'),
+    path('<pk>/', views.InboxView.as_view(), name='inbox-conversation'),
+    path('send/<pk>/', views.SendMessageView.as_view(), name='send'),
+    path('new-conversation/<pk>/', views.CreateConversationView.as_view(), name='new-conversation'),
 ]
