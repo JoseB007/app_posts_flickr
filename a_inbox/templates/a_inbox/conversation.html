@@ -27,14 +27,14 @@
                             <div class="message-data text-right">
                                 <small class="message-data-time">{{ message.created }}</small>
                             </div>
-                            <div class="message other-message float-right">{{ message.body }}</div>
+                            <div class="message other-message float-right">{{ message.body_decrypted }}</div>
                         </li>
                         {% else %}
                             <li class="clearfix">
                                 <div class="message-data">
                                     <small class="message-data-time">{{ message.created }}</small>
                                 </div>
-                                <div class="message my-message">{{ message.body }}</div>                                    
+                                <div class="message my-message">{{ message.body_decrypted }}</div>                                    
                             </li>
                         {% endif %}
                     {% endfor %}                               

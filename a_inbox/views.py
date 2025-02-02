@@ -7,10 +7,18 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from django.db.models import Count
 
+from cryptography.fernet import Fernet
+
+from a_core import settings
+
 from a_profile.models import Profile
 
 from .models import Conversation
 from .forms import InboxMessageForm
+
+
+# Inicializar clase Fernet() para encriptar texto. La clase toma como parámtero la clave en formato de bytes 
+f = Fernet(settings.ENCRYPT_KEY)
 
 # Create your views here.
 class InboxView(LoginRequiredMixin, generic.TemplateView):
@@ -59,6 +67,14 @@ class SendMessageView(LoginRequiredMixin, generic.FormView):
     def form_valid(self, form):
         conversation = get_object_or_404(Conversation, pk=self.kwargs['pk'])
         message = form.save(commit=False)
+
+        # Encriptación del cuerpo del mensaje
+        message_original = form.cleaned_data['body']
+        message_encode = message_original.encode('utf-8')
+        message_encrypted = f.encrypt(message_encode)
+        message_decoded = message_encrypted.decode('utf-8')
+
+        message.body = message_decoded
         message.sender = self.request.user
         message.conversation = conversation
         message.save()
@@ -118,6 +134,14 @@ class CreateConversationView(LoginRequiredMixin, generic.View):
                 conversation_users.participants.set(id_users)
 
             message = form.save(commit=False)
+            
+            # Encriptación del cuerpo del mensaje
+            message_original = form.cleaned_data['body']
+            message_encode = message_original.encode('utf-8')
+            message_encrypted = f.encrypt(message_encode)
+            message_decoded = message_encrypted.decode('utf-8')
+
+            message.body = message_decoded
             message.sender = request.user
             message.conversation = conversation_users
             message.save()

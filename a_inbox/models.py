@@ -3,6 +3,10 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from django.utils.timesince import timesince
 
+from cryptography.fernet import Fernet
+
+from a_core import settings
+
 import uuid
 
 
@@ -15,6 +19,17 @@ class InboxMessage(models.Model):
 
     class Meta:
         ordering = ['-created']
+
+    @property
+    def body_decrypted(self):
+        f = Fernet(settings.ENCRYPT_KEY)
+        try:
+            message_decrypted = f.decrypt(self.body)
+            message_decoded = message_decrypted.decode('utf-8')
+            message = message_decoded
+        except:
+            message = self.body
+        return message
 
     def __str__(self):
         time_since = timesince(self.created, timezone.now())
