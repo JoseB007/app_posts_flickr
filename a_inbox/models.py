@@ -45,8 +45,13 @@ class Conversation(models.Model):
     class Meta:
         ordering = ['-lastmessage_created']
 
+    # Descripción corta que puede ser usada en el sitio de administración
+    def display_participants(self):
+        return ", ".join(user.profile.full_name for user in self.participants.all())
+    display_participants.short_description = "Participants"
+
     def __str__(self):
-        user_names = ", ".join(user.username for user in self.participants.all())
-        return f"Conversation between {user_names}"
+        user_names = ", ".join(user.profile.full_name for user in self.participants.all())
+        return f"Conversation: {user_names}"
 
     
