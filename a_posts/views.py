@@ -12,6 +12,8 @@ import requests
 from .models import Post, Tag, Comment, Reply, LikedPosts
 from .forms import FormPost, FormComment, FormReply
 
+from a_inbox.models import Conversation
+
 # Create your views here.
 class ViewHome(generic.ListView):
     model = Post
@@ -51,6 +53,7 @@ class ViewHome(generic.ListView):
         context = super().get_context_data(**kwargs)
         context['title'] = "Django Awesome Posts"
         context['current_tag'] = self.tag
+        # context['num_messages_read'] = Conversation.objects.filter(participants=self.request.user).filter(is_read=False).count()
         return context
 
 

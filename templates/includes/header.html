@@ -21,7 +21,18 @@
             {% if request.user.is_authenticated %}
             <li><a href="/" style="color: white !important;">Home</a></li>
             <li><a href="{% url 'a_posts:post-create' %}" style="color: white !important;">Create Post</a></li>
-            <li><a href="{% url 'inbox:inbox' %}" style="color: white !important;">Inbox</a></li>
+            <li class="relative">
+                <div class="absolute top-2 right-0"
+                hx-get="{% url 'inbox:notify-inbox' %}"
+                hx-target="this"
+                hx-swap="innerHTML"
+                hx-trigger="load delay:500ms">
+                    <div class="rounded-full bg-blue-500 p-1.5"></div>
+                </div>
+                <a href="{% url 'inbox:inbox' %}" style="color: white !important;">
+                    Inbox
+                </a>
+            </li>
             <li x-data="{ dropdownOpen: false }" class="relative">
                 <a @click="dropdownOpen = !dropdownOpen" @click.away="dropdownOpen = false" class="cursor-pointer select-none">
                     <img class="h-8 w-8 rounded-full object-cover" src="{{ request.user.profile.get_image }}"/>

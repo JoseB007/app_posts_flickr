@@ -30,15 +30,20 @@
                                     {% for user in conversation.participants.all %}
                                     {% if user != request.user %}
                                         <a href="{% url 'inbox:inbox-conversation' conversation.pk %}">
+                                            {% if conversation.is_read == False and conversation.messages.first.sender != request.user %}
+                                            <div class="absolute left-11 [&>*]:border-2 [&>*]:border-gray-100">
+                                                <div class="rounded-full bg-blue-500 p-1.5"></div>
+                                            </div>
+                                            {% endif %} 
                                             <div class="d-flex flex-row">
                                                 <div class="contenedor_img">
                                                     <img src="{{ user.profile.get_image }}" alt="avatar">
                                                 </div>
                                                 <div class="about">
                                                     <div class="name">{{ user.profile.get_full_name }}</div>
-                                                    <div class="status" id="status-{{ conversation.pk }}"> <i class="fa fa-circle offline">
-                                                        </i>{{ conversation.lastmessage_created }}
-                                                    </div>                                         
+                                                    <div class="status" id="status-{{ conversation.pk }}">
+                                                        {{ conversation.lastmessage_created }}                                      
+                                                    </div>
                                                 </div>
                                             </div>
                                         </a>

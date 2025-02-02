@@ -17,16 +17,22 @@ class InboxView(LoginRequiredMixin, generic.TemplateView):
     template_name = 'a_inbox/inbox.html'
 
     def get(self, request, *args, **kwargs):
+        # Buscar usuario para iniciar una nueva conversación
         if request.headers.get('HX-Request') == 'true':
             terms = request.GET.get("search_user")
             profiles = Profile.objects.filter(full_name__icontains=terms)
 
             return render(request, 'a_inbox/snippets/search_user.html', {'profiles': profiles})
 
+        # Buscar una conversación
         id_conversation = self.kwargs.get('pk')  # Usar get para evitar KeyError
         if id_conversation:
             # Manejar explícitamente el caso en el que no se encuentra la conversación
             conversation = get_object_or_404(Conversation, pk=id_conversation)
+            # Cambiar el estado de la conversación si todos los usuarios la han visto 
+            if conversation.is_read == False and conversation.messages.first().sender != request.user:
+                conversation.is_read = True
+            conversation.save()
 
             context = {
                 'conversations': Conversation.objects.all(),
@@ -46,7 +52,7 @@ class InboxView(LoginRequiredMixin, generic.TemplateView):
         return context
 
 
-class SendMessageView(generic.FormView):
+class SendMessageView(LoginRequiredMixin, generic.FormView):
     form_class = InboxMessageForm
     template_name = 'a_inbox/conversation.html'
 
@@ -56,6 +62,9 @@ class SendMessageView(generic.FormView):
         message.sender = self.request.user
         message.conversation = conversation
         message.save()
+
+        if conversation.is_read == True:
+            conversation.is_read = False
 
         conversation.lastmessage_created = message.created
         conversation.save()
@@ -70,7 +79,7 @@ class SendMessageView(generic.FormView):
         return JsonResponse({'error': form.errors}, status=400)
     
 
-class CreateConversationView(generic.View):
+class CreateConversationView(LoginRequiredMixin, generic.View):
     def get(self, request, *args, **kwargs):
         user = get_object_or_404(User, pk=self.kwargs.get('pk'))
 
@@ -113,9 +122,22 @@ class CreateConversationView(generic.View):
             message.conversation = conversation_users
             message.save()
 
+            if conversation_users.is_read == True:
+                conversation_users.is_read = False
+
             conversation_users.lastmessage_created = message.created
             conversation_users.save()
 
             return redirect(reverse('inbox:inbox-conversation', args=[conversation_users.pk]))
         else:
             return JsonResponse({'error': form.errors}, status=400)
+
+
+class NotifyInboxView(LoginRequiredMixin, generic.View):
+    def get(self, request, *args, **kwargs):
+        my_conversations = Conversation.objects.filter(participants=self.request.user, is_read=False)
+        for c in my_conversations:
+            latest_message = c.messages.first()
+            if latest_message.sender != request.user:
+                return render(request, 'a_inbox/notify_icon.html')
+        return HttpResponse("")
