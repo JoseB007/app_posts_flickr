@@ -9,6 +9,17 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
+import os
+from dotenv import load_dotenv
+import base64
+
+
+# Detectar si estamos en producción o desarrollo
+ENVIRONMENT = os.getenv("DJANGO_ENV", "development")  # Por defecto, "development"
+if ENVIRONMENT == "production":
+    load_dotenv(".env")  # Cargar configuración de producción
+else:
+    load_dotenv(".env.dev")  # Cargar configuración de desarrollo
 
 from pathlib import Path
 
@@ -20,15 +31,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-%3di6lq*370vk+&5$$_i*oxn^vr#pi!!c79d(8$vi20f-fpro$'
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # Clave de encriptación generada por Cryptography en formato de bytes (b)
-ENCRYPT_KEY = b'mqsIz4U-OAzlAtDBtc5d5Y_znV7r-Srl_l_myn14_x8='
+ENCRYPT_KEY = base64.b64decode(os.getenv("ENCRYPT_KEY"))
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv("DEBUG") == "True"
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 
 
 # Application definition

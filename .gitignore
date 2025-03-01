@@ -14,3 +14,7 @@ db.sqlite3
 
 # Ignorar archivos y carpetas de media
 media/
+
+# Ignorar variables de entorno .env
+.env
+.env.dev
