@@ -17,4 +17,3 @@ media/
 
 # Ignorar variables de entorno .env
 .env
-.env.dev

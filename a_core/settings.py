@@ -13,13 +13,7 @@ import os
 from dotenv import load_dotenv
 import base64
 
-
-# Detectar si estamos en producción o desarrollo
-ENVIRONMENT = os.getenv("DJANGO_ENV", "development")  # Por defecto, "development"
-if ENVIRONMENT == "production":
-    load_dotenv(".env")  # Cargar configuración de producción
-else:
-    load_dotenv(".env.dev")  # Cargar configuración de desarrollo
+load_dotenv()
 
 from pathlib import Path
 
@@ -34,13 +28,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("SECRET_KEY")
 
 # Clave de encriptación generada por Cryptography en formato de bytes (b)
-ENCRYPT_KEY = base64.b64decode(os.getenv("ENCRYPT_KEY"))
+ENCRYPT_KEY = os.getenv("ENCRYPT_KEY")
+ENCRYPT_KEY = ENCRYPT_KEY.encode()
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DEBUG") == "True"
+DEBUG = os.getenv("DEBUG", "True").strip().lower() in ["true", "1"]
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
-
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 
 # Application definition
 
